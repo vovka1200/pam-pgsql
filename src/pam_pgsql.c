@@ -266,8 +266,8 @@ pam_sm_open_session(pam_handle_t *pamh, int flags,
 	PGresult *res;
 	PGconn *conn;
 
-	user = NULL; rhost = NULL;
-
+	user = NULL; rhost = NULL; 
+	
 	if ((options = mod_options(argc, argv)) != NULL) {
 
 		if (options->query_session_open) {
@@ -277,7 +277,7 @@ pam_sm_open_session(pam_handle_t *pamh, int flags,
 			if ((rc = pam_get_item(pamh, PAM_RHOST, (const void **)&rhost)) == PAM_SUCCESS) {
 
 				if ((rc = pam_get_user(pamh, &user, NULL)) == PAM_SUCCESS) {
-					DBGLOG("Session opened for user: %s", user);
+					DBGLOG("session_open_query: %s, %s", user, options->query_session_open);  
 					if ((conn = db_connect(options))) {
 						pg_execParam(conn, &res, options->query_session_open, pam_get_service(pamh), user, NULL, rhost);
 						PQclear(res);
@@ -315,23 +315,23 @@ pam_sm_close_session(pam_handle_t *pamh, int flags,
 
 		if (options->query_session_close) {
 
-			DBGLOG("session_close_query: %s", options->query_session_close);
-			
 			if ((rc = pam_get_item(pamh, PAM_RHOST, (const void **)&rhost)) == PAM_SUCCESS) {
 
 				if ((rc = pam_get_user(pamh, &user, NULL)) == PAM_SUCCESS) {
-					DBGLOG("Session closed for user: %s", user);
+					DBGLOG("session_close_query: %s, %s", user, options->query_session_close); 
 					if ((conn = db_connect(options))) {
 						  pg_execParam(conn, &res, options->query_session_close, pam_get_service(pamh), user, NULL, rhost);
 						  PQclear(res);
 						  PQfinish(conn);
 					}
 				} else {
-					DBGLOG("Session opened: user not found");
+					DBGLOG("Session closed: user not found");
 				}
 			} else {
 				DBGLOG("Session closed: host not found");
 			}
+		} else {
+			DBGLOG("Session closed: no query");
 		}
 	//free_module_options(options);
 	}
