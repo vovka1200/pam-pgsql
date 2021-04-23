@@ -131,7 +131,7 @@ pam_sm_acct_mgmt(pam_handle_t *pamh, int flags, int argc,
 				if(!(conn = db_connect(options))) {
 					rc = PAM_AUTH_ERR;
 				} else {
-					DBGLOG("query: %s", options->query_acct);
+					DBGLOG("query_acct: %s", options->query_acct);
 					rc = PAM_AUTH_ERR;
 					if(pg_execParam(conn, &res, options->query_acct, pam_get_service(pamh), user, NULL, rhost) == PAM_SUCCESS) {
 						if (PQntuples(res) == 1 &&
@@ -221,7 +221,7 @@ pam_sm_chauthtok(pam_handle_t *pamh, int flags, int argc, const char **argv)
 						rc = PAM_AUTHINFO_UNAVAIL;
 					}
 					if (rc == PAM_SUCCESS) {
-						DBGLOG("query: %s", options->query_pwd);
+						DBGLOG("auth_query: %s", options->query_pwd);
 						if(pg_execParam(conn, &res, options->query_pwd, pam_get_service(pamh), user, newpass_crypt, rhost) != PAM_SUCCESS) {
 							rc = PAM_AUTH_ERR;
 						} else {
@@ -270,6 +270,8 @@ pam_sm_open_session(pam_handle_t *pamh, int flags,
 
 		if (options->query_session_open) {
 
+			DBGLOG("session_open_query: %s", options->query_session_open);
+			
 			if ((rc = pam_get_item(pamh, PAM_RHOST, (const void **)&rhost)) == PAM_SUCCESS) {
 
 				if ((rc = pam_get_user(pamh, &user, NULL)) == PAM_SUCCESS) {
@@ -309,6 +311,8 @@ pam_sm_close_session(pam_handle_t *pamh, int flags,
 
 		if (options->query_session_close) {
 
+			DBGLOG("session_close_query: %s", options->query_session_close);
+			
 			if ((rc = pam_get_item(pamh, PAM_RHOST, (const void **)&rhost)) == PAM_SUCCESS) {
 
 				if ((rc = pam_get_user(pamh, &user, NULL)) == PAM_SUCCESS) {
