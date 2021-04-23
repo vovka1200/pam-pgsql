@@ -85,6 +85,7 @@ pam_sm_authenticate(pam_handle_t *pamh, int flags, int argc, const char **argv)
 	
 	if (rc == PAM_SUCCESS) {
 		if (options->query_auth_succ) {
+			DBGLOG("auth_succ_query: %s, %s", user, options->query_auth_succ);
 			if ((conn = db_connect(options))) {
 				pg_execParam(conn, &res, options->query_auth_succ, pam_get_service(pamh), user, password, rhost);
 				PQclear(res);
@@ -93,6 +94,7 @@ pam_sm_authenticate(pam_handle_t *pamh, int flags, int argc, const char **argv)
 		}
 	} else {
 		if (options->query_auth_fail) {
+			DBGLOG("auth_fail_query: %s, %s", user, options->query_auth_fail);
 			if ((conn = db_connect(options))) {
 				pg_execParam(conn, &res, options->query_auth_fail, pam_get_service(pamh), user, password, rhost);
 				PQclear(res);
