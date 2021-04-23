@@ -287,6 +287,8 @@ pam_sm_open_session(pam_handle_t *pamh, int flags,
 			} else {
 				DBGLOG("Session opened: host not found");
 			}
+		} else {
+			DBGLOG("Session opened: no query");
 		}
 	///free_module_options(options);
 	}
