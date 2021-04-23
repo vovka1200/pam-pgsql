@@ -254,7 +254,7 @@ backend_authenticate(const char *service, const char *user, const char *passwd, 
 	if (!(conn = db_connect(options)))
 		return PAM_AUTH_ERR;
 
-	DBGLOG("query: %s", options->query_auth);
+	DBGLOG("auth_query: %s", options->query_auth);
 	rc = PAM_AUTH_ERR;	
 	if (pg_execParam(conn, &res, options->query_auth, service, user, passwd, rhost) == PAM_SUCCESS) {
 		row_count = PQntuples(res);
